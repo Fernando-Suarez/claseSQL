@@ -1,0 +1,4 @@
+			-- Implementación y uso de un diagrama E-R
+-- Recuperando el Diagrama E-R que realizamos en la Clase 2, y con los conocimientos adquiridos hasta ahora, crear una base de datos nueva,
+--  integrando a la misma las tablas realizadas en este diagrama E-R.
+-- Tengan presente que cada una de las tablas deberá tener, como mínimo, unos 3 campos. Si tienen o deseas agregarles más, mejor aún.
