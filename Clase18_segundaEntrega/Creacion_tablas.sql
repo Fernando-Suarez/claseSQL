@@ -97,7 +97,7 @@ FOREIGN KEY (id_venta) REFERENCES ventas(id_venta));
  FOREIGN KEY (id_venta) REFERENCES ventas(id_venta));
  
  -- Creacion de la Tabla Ventas_log
- Create table ventas_log(
+ CREATE TABLE IF NOT EXISTS ventas_log(
 id_venta INT PRIMARY KEY AUTO_INCREMENT ,
 fecha DATE,
 id_cliente INT,

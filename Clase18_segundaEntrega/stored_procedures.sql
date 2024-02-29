@@ -1,22 +1,26 @@
 -- stored procedures
-
-create procedure SPbajaProducto
-@id int
-as
-begin
-
-
-
 DELIMITER //
-CREATE PROCEDURE SP_cambio_estado(
-IN field CHAR(25),
-IN id INT,
-IN activo BIT)
+CREATE PROCEDURE sp_agregar_producto_stock(
+in p_nombre CHAR(40),
+in p_descripcion VARCHAR(100),
+in p_precio DECIMAL(7,2),
+in p_id_proveedores INT,
+in p_id_categoria INT, 
+in p_activo BIT,
+in s_cantidad INT)
 BEGIN
-    update alumno set activo=0
-	where id_producto = id;
+	DECLARE p_id_producto INT;
+    SET p_id_producto = f_id_ultimo_producto();
+	-- insertar el producto
+    INSERT INTO productos (nombre,descripcion,precio,id_proveedores,id_categoria,activo) VALUES (p_nombre,p_descripcion,p_precio,p_id_proveedores,p_id_categoria,p_activo);
+    
+    -- insertar el stock
+    INSERT INTO stock (cantidad,id_proveedores,id_producto) VALUES (s_cantidad,p_id_proveedores,p_id_producto + 1);
 END //
 DELIMITER ;
+
+-- CALL sp_agregar_producto_stock("coca cola","bebisa gaseosa",2000.00,3,8,1,40);
+
 
 DELIMITER //
 CREATE PROCEDURE sp_Registrar_Detalle_Venta(
@@ -38,8 +42,6 @@ BEGIN
     FROM stock
     WHERE id_producto = p_id_producto;
 
-
-
 	-- Descontar el stock del producto
     IF v_stock > p_cantidad THEN
 		UPDATE stock
@@ -55,4 +57,5 @@ BEGIN
 END //
 DELIMITER ;
 
-CALL sp_Registrar_Detalle_Venta(79, 50 ,50);
+-- CALL sp_Registrar_Detalle_Venta(79, 50 ,50);
+
