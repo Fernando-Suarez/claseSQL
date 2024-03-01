@@ -1,10 +1,12 @@
 -- Vistas
 
-create view v_detalles_de_ventas as
-select V.id_venta,fecha,V.id_producto,precio_unitario,cantidad,total_gastado 
-from (ventas V 
-inner join pagos P on P.id_venta = V.id_venta)
-inner join detalle_venta D on D.id_venta = V.id_venta;
+create view v_ventas as
+select V.id_venta, C.nombre as nombre_cliente, C.apellido as apellido_cliente, P.nombre as nombre_producto, E.nombre as nombre_empleado,E.apellido as apellido_empleado, pagos.total_gastado,V.fecha
+From ventas V
+inner join clientes C on V.id_cliente = C.id_cliente
+inner join productos P on V.id_producto = P.id_producto
+inner join empleados E on V.id_empleado = E.id_empleado
+inner join pagos on V.id_pago = pagos.id_pago;
 
 create view v_stock_producto as
 select P.id_producto, P.nombre,S.cantidad, P.id_proveedores

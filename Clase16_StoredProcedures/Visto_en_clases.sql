@@ -33,8 +33,6 @@ CALL sp_get_games();
 
 DELIMITER //
 
- 
-
 CREATE PROCEDURE `sp_get_games_order` (IN field CHAR(20))
 BEGIN
     DECLARE game_order VARCHAR(100);

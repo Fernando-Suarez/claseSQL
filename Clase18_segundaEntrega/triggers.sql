@@ -1,11 +1,11 @@
 					-- TRIGGERS
 DELIMITER //
-CREATE TRIGGER t_ventas_update
-BEFORE UPDATE ON ventas
+CREATE TRIGGER t_ventas_delete
+BEFORE DELETE ON ventas
 FOR EACH ROW
 BEGIN
-	INSERT INTO ventas_log (id_venta,fecha,id_cliente,id_producto,id_empleado,fecha_update,usuario_update) 
-    VALUES (OLD.id_venta, OLD.fecha, OLD.id_cliente, OLD.id_producto, OLD.id_empleado, now(), user());
+	INSERT INTO ventas_log (id_venta,id_cliente,id_producto,id_empleado,id_pago,id_detalle_venta,fecha,fecha_eliminacion,usuario_eliminacion) 
+    VALUES (OLD.id_venta, OLD.id_cliente, OLD.id_producto, OLD.id_empleado,OLD.id_pago,OLD.id_detalle_venta,OLD.fecha, now(), user());
 END //
 DELIMITER ;
 

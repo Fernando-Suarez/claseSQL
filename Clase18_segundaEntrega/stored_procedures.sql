@@ -19,19 +19,21 @@ BEGIN
 END //
 DELIMITER ;
 
--- CALL sp_agregar_producto_stock("coca cola","bebisa gaseosa",2000.00,3,8,1,40);
+ -- CALL sp_agregar_producto_stock("coca cola","bebisa gaseosa",2000.00,3,8,1,40);
 
 
 DELIMITER //
-CREATE PROCEDURE sp_Registrar_Detalle_Venta(
+CREATE PROCEDURE sp_Registrar_Pago_y_Detalle_Venta(
 IN p_id_producto INT,
 IN p_cantidad INT,
-IN p_id_venta INT
+IN p_id_caja INT,
+IN p_metodo_pago CHAR(10)
 )
 BEGIN
 	DECLARE v_precio DECIMAL(7, 2);
     DECLARE v_stock INT;
-
+    DECLARE v_total_gastado DECIMAL(10,2);
+    
 	-- Obtener el precio actualizado del producto
 	SELECT precio INTO v_precio
 	FROM productos
@@ -42,20 +44,30 @@ BEGIN
     FROM stock
     WHERE id_producto = p_id_producto;
 
+		-- Obtener total gastado
+    SELECT sum(p_cantidad * v_precio) INTO v_total_gastado  ;
 	-- Descontar el stock del producto
     IF v_stock > p_cantidad THEN
 		UPDATE stock
 		SET cantidad = cantidad - p_cantidad
 		WHERE id_producto = p_id_producto;
-        	-- Crear la factura del  detalle_venta
-	INSERT INTO detalle_venta (id_producto, cantidad, precio_unitario, id_venta)
-	VALUES (p_id_producto , p_cantidad, v_precio , p_id_venta);
+    
+            -- Crear el pago
+    INSERT INTO pagos (id_pago, total_gastado, metodo_pago, id_caja)
+	VALUES (f_id_ultimo_pago() + 1 , v_total_gastado, p_metodo_pago , p_id_caja);       
+    
+            -- Crear la factura del  detalle_venta
+	INSERT INTO detalle_venta (id_producto, cantidad, precio_producto, id_pago)
+	VALUES (p_id_producto , p_cantidad, v_precio , f_id_ultimo_pago());
+                
 		SELECT 'Detalle de Venta registrado exitosamente.' AS mensaje;
     ELSE
 		SELECT 'No hay stock suficiente' AS mensaje;
     END IF;
+    
+		
 END //
 DELIMITER ;
 
--- CALL sp_Registrar_Detalle_Venta(79, 50 ,50);
+ -- CALL sp_Registrar_Pago_y_Detalle_Venta(101, 3, 2, 'efectivo');
 

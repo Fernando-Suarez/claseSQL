@@ -1,4 +1,4 @@
- -- DROP DATABASE comercio;
+-- DROP DATABASE comercio;
 -- Creacion de la base de datos
 CREATE DATABASE IF NOT EXISTS comercio;
 
@@ -64,56 +64,67 @@ domicilio VARCHAR(30));
 CREATE TABLE IF NOT EXISTS cajas (
 id_caja INT PRIMARY KEY AUTO_INCREMENT,
 id_sucursal INT,
-FOREIGN KEY (id_sucursal) REFERENCES sucursal(id_sucursal) ON DELETE CASCADE);
-
--- Creacion de la Tabla Ventas
-CREATE TABLE IF NOT EXISTS ventas(
-id_venta INT PRIMARY KEY AUTO_INCREMENT ,
-fecha DATE,
-id_cliente INT,
-id_producto INT,
 id_empleado INT,
-FOREIGN KEY (id_cliente) REFERENCES clientes(id_cliente) ON UPDATE CASCADE,
-FOREIGN KEY (id_producto) REFERENCES productos(id_producto) ON UPDATE CASCADE,
-FOREIGN KEY (id_empleado) REFERENCES empleados(id_empleado) ON UPDATE CASCADE
- );
- 
+FOREIGN KEY (id_sucursal) REFERENCES sucursal(id_sucursal) ON DELETE CASCADE,
+FOREIGN KEY (id_empleado) REFERENCES empleados(id_empleado));
+
   -- Creacion de la Tabla Pago
 CREATE TABLE IF NOT EXISTS pagos (
 id_pago INT PRIMARY KEY AUTO_INCREMENT,
 total_gastado DECIMAL(10,2),
 metodo_pago VARCHAR(20),
-id_venta INT,
-FOREIGN KEY (id_venta) REFERENCES ventas(id_venta));
+id_caja INT,
+FOREIGN KEY (id_caja) REFERENCES cajas(id_caja)
+);
  
  -- Creacion de la Tabla Detalle de Venta
  CREATE TABLE IF NOT EXISTS detalle_venta (
  id_detalle_venta INT PRIMARY KEY AUTO_INCREMENT,
  id_producto INT,
  cantidad INT,
- precio_unitario DECIMAL(7,2),
- id_venta INT,
+ precio_producto DECIMAL(7,2),
+ id_pago INT, 
  FOREIGN KEY (id_producto) REFERENCES productos(id_producto) ON UPDATE CASCADE,
- FOREIGN KEY (id_venta) REFERENCES ventas(id_venta));
+ FOREIGN KEY (id_pago) REFERENCES pagos(id_pago));
+
  
- -- Creacion de la Tabla Ventas_log
- CREATE TABLE IF NOT EXISTS ventas_log(
+ -- Creacion de la Tabla Ventas
+CREATE TABLE IF NOT EXISTS ventas(
 id_venta INT PRIMARY KEY AUTO_INCREMENT ,
-fecha DATE,
 id_cliente INT,
 id_producto INT,
 id_empleado INT,
-fecha_update DATE ,
-usuario_update VARCHAR(50));
+id_pago INT,
+id_detalle_venta INT,
+fecha TIMESTAMP,
+FOREIGN KEY (id_cliente) REFERENCES clientes(id_cliente) ,
+FOREIGN KEY (id_producto) REFERENCES productos(id_producto),
+FOREIGN KEY (id_empleado) REFERENCES empleados(id_empleado) ,
+FOREIGN KEY (id_pago) REFERENCES pagos(id_pago) ,
+FOREIGN KEY (id_detalle_venta) REFERENCES detalle_venta(id_detalle_venta) 
+ );
+ 
+ 
+ -- Creacion de la Tabla Ventas_log
+ CREATE TABLE IF NOT EXISTS ventas_log(
+id_venta INT PRIMARY KEY ,
+id_cliente INT,
+id_producto INT,
+id_empleado INT,
+id_pago INT,
+id_detalle_venta INT,
+fecha TIMESTAMP,
+fecha_eliminacion TIMESTAMP ,
+usuario_eliminacion VARCHAR(50));
 
 -- Creacion de la Tabla Clientes_log
 CREATE TABLE IF NOT EXISTS clientes_log(
-id_cliente INT PRIMARY KEY AUTO_INCREMENT,
+id_cliente INT PRIMARY KEY,
 nombre VARCHAR(30) ,
 apellido VARCHAR(30) ,
 email VARCHAR(30),
 telefono VARCHAR(30),
-fecha_eliminacion DATE,
+fecha_eliminacion TIMESTAMP,
 usuario_eliminacion VARCHAR(50));
  
 
