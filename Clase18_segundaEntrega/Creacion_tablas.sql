@@ -1,4 +1,4 @@
--- DROP DATABASE comercio;
+ -- DROP DATABASE comercio;
 -- Creacion de la base de datos
 CREATE DATABASE IF NOT EXISTS comercio;
 
